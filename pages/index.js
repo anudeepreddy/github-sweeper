@@ -1,17 +1,23 @@
-import React from 'react'
-import { signIn, signOut, useSession } from 'next-auth/client'
+import React,{useEffect} from "react";
+import {useSession} from "next-auth/client";
+import { useRouter } from 'next/router'
 
-export default function Page() {
+const Header = props => {
+  
   const [ session, loading ] = useSession()
-console.log(session)
-  return <>
-    {!session && <>
-      Not signed in <br/>
-      <button onClick={signIn}>Sign in</button>
-    </>}
-    {session && <>
-      Signed in as {session.user.email} <br/>
-      <button onClick={signOut}>Sign out</button>
-    </>}
-  </>
-}
+  const router = useRouter();
+
+  useEffect(()=>{
+    if(session){
+      router.push('/repos');
+    }
+  },[session]);
+
+  return (
+    <>
+      <p>Login</p>
+    </>
+  );
+};
+
+export default Header;

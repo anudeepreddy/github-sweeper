@@ -3,17 +3,34 @@ import { getSession } from 'next-auth/client'
 import axios from 'axios';
 
 export default async(req, res) => {
-  const db = connectToDatabase('');
-  //const {user} = await getSession({ req });
-  console.log(getSession({req}));/*
-  const userRecord = await db.collection('users').findOne({email:user.email});
-  const access_token = await db.collection('accounts').findOne({userId:userRecord._id});
+  const db = await connectToDatabase(process.env.MONGO_URI);
+  const {user} = await getSession({ req });
 
-  const result = await axios.get('https://api.github.com/user',{headers:{Authorization:`token ${access_token}`}});
+  console.log('user >> ' + user.email);
+  
+  const userRecord = await db.collection('users').findOne({email:user.email});
+  
+  const {accessToken} = await db.collection('accounts').findOne({userId:userRecord._id});
+  console.log('accessToken >> '+accessToken);
  
-  res.json(result);
-*/
-res.end();
+  try{
+    const {data} = await axios.get('https://api.github.com/user/repos?per_page=100',{headers:{Authorization:`token ${accessToken}`}});
+    let result = data.map((o)=>{
+      return {
+        name: o.name,
+        url: o.html_url,
+        private: o.private,
+        description: o.description,
+  
+      }
+    })
+  
+  
+    res.json(result);
+  } catch(e){
+    console.log(e);
+    res.json([]);
+  }
   
 }
   

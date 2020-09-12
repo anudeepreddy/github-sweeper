@@ -14,7 +14,6 @@ const options = {
       authorizationUrl: 'https://github.com/login/oauth/authorize',
       profileUrl: 'https://api.github.com/user',
       profile: (profile) => {
-        console.log(profile);
         return {
           id: profile.id,
           username: profile.login,
@@ -24,12 +23,12 @@ const options = {
 
         }
       },
-      clientId: '',
-      clientSecret: ''
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET
     }
   ],
   session: { jwt: true },
-  database: 'process.env.MONGO',
+  database: process.env.MONGO_URI,
 }
 
 export default (req, res) => NextAuth(req, res, options)
