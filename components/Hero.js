@@ -5,6 +5,7 @@ import {FaLongArrowAltRight} from 'react-icons/fa';
 import { signIn } from 'next-auth/client';
 
 const Flex = styled.div`
+  padding: 1em;
   display: flex;
   flex-direction: row;
   min-height: 90vh;
