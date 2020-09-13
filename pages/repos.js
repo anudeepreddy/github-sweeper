@@ -7,7 +7,15 @@ import {GoPlus,GoCheck} from 'react-icons/go';
 import PageLoader from '../components/PageLoader';
 import Alert from '../components/Alert';
 import DeleteDialog from '../components/DeleteDialog'; 
+import styled from 'styled-components';
 
+const RepoBody = styled.div`
+  display: grid;
+  place-items: center;
+  @media (min-width: 768px) {
+    padding: 1em 2em;
+  }
+`
 
 const Repos = props => {
   
@@ -92,12 +100,12 @@ const Repos = props => {
           {deleteBatch.length>0 && <Button variantColor="red" style={{marginRight:'3em'}} onClick={()=>setIsAlertOpen(true)}>Delete {deleteBatch.length} {deleteBatch.length>1?'repos':'repo'}</Button>}
         </Flex>
         {repos.length!=0?
-        <div style={{padding: '1em 2em', display:'grid', placeItems: 'center'}}>
-          <Flex direction='row' wrap='wrap' gridGap="1em" style={{justifyContent:'space-around',padding:'1em'}}>
+        <RepoBody>
+          <Flex direction='row' wrap='wrap' gridGap="1em" style={{justifyContent:'space-around'}}>
             {
               repos.map((repo)=>
                 (
-                    <Box key={repo.name} minW="sm" borderWidth="1px" rounded="lg" overflow="hidden" style={{padding:'0.5em',marginTop:'1em',position:'relative'}}>
+                    <Box key={repo.name} minW="xs" maxW="sm" borderWidth="1px" rounded="lg" overflow="hidden" style={{padding:'0.5em',marginTop:'1em',position:'relative'}}>
                       <Box
                         mt="1"
                         fontWeight="semibold"
@@ -121,7 +129,7 @@ const Repos = props => {
                 )
               )}
           </Flex>
-        </div>:
+        </RepoBody>:
         <PageLoader/>
         }
       </div>
