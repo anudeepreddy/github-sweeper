@@ -18,13 +18,17 @@ export default async(req, res) => {
     let result = data.map((o)=>{
       return {
         name: o.name,
+        fullName: o.full_name,
         url: o.html_url,
         private: o.private,
         description: o.description,
-  
+        owner: o.permissions.admin
       }
     })
-  
+    
+    result = result.filter((o)=>{
+      return o.owner;
+    })
   
     res.json(result);
   } catch(e){

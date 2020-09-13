@@ -2,12 +2,13 @@ import React,{useEffect,useState} from 'react';
 import {useSession} from 'next-auth/client';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Heading, Box, Badge, Flex, Button } from "@chakra-ui/core";
+import { Heading, Box, Badge, Flex, Button, Divider } from "@chakra-ui/core";
 import {GoPlus,GoCheck} from 'react-icons/go';
 import PageLoader from '../components/PageLoader';
 import Alert from '../components/Alert';
 import DeleteDialog from '../components/DeleteDialog'; 
 import styled from 'styled-components';
+import axios from 'axios';
 
 const RepoBody = styled.div`
   display: grid;
@@ -26,8 +27,8 @@ const Repos = props => {
   const [isAlertOpen,setIsAlertOpen] = useState(false);
   const [isDeleteDialogOpen,setIsDeleteDialogOpen] = useState(false);
   const [deletedList,setDeletedList] = useState([]);
-  const [warn,setWarn] = useState(false);
-  const [warnMessage,setWarnMessage] = useState('');
+  const [failedList,setFailedList] = useState([]);
+  const [finished,setFinished] = useState(false);
 
   function addToDeleteBatch(repoUrl){
     for(let repo of repos){
@@ -58,21 +59,28 @@ const Repos = props => {
       console.log('Operation not permitted');
     } else {
       setIsDeleteDialogOpen(false);
+      router.reload();
     }
   }
 
   function initiateDelete(idx){
-      setTimeout(()=>{
-        setDeletedList([...deletedList,deleteBatch[idx].name]);
-      },5000);
+      axios.post('/api/delete_repo',deleteBatch[idx]).then(resp=>{
+        if(resp.data.status){
+          setDeletedList([...deletedList,deleteBatch[idx].name]);
+        } else{
+          setFailedList([...failedList,deleteBatch[idx].name]);
+        }
+      });
   }
 
   useEffect(()=>{
     if(deletedList.length!=deleteBatch.length){
       console.log((deletedList.length)+" >> "+deleteBatch[deletedList.length].name);
       initiateDelete(deletedList.length);
+    } else if(deleteBatch.length!=0){
+      setFinished(true);
     }
-  },[deletedList]);
+  },[deletedList,failedList]);
 
   useEffect(()=>{
     if(!session){
@@ -91,14 +99,15 @@ const Repos = props => {
       session &&
       <>
       <Alert isOpen={isAlertOpen} onClose={onAlertClosed} onConfirm={onAlertConfirmed} repoList={deleteBatch}/>
-      <DeleteDialog isOpen={isDeleteDialogOpen} onClose={onDeleteDialogClosed} repos={deleteBatch} deleted={deletedList}/>
+      <DeleteDialog isOpen={isDeleteDialogOpen} onClose={onDeleteDialogClosed} repos={deleteBatch} deleted={deletedList} failed={failedList} finished={finished}/>
       <div>
-        <Flex justify='space-between' align='center' style={{padding:'1em'}}>
+        <Flex wrap='wrap' justify='space-between' align='center' style={{padding:'1em'}}>
           <Heading as="h3" size="xl">
               {session.user.name}'s Repos
           </Heading>
           {deleteBatch.length>0 && <Button variantColor="red" style={{marginRight:'3em'}} onClick={()=>setIsAlertOpen(true)}>Delete {deleteBatch.length} {deleteBatch.length>1?'repos':'repo'}</Button>}
         </Flex>
+        <Divider/>
         {repos.length!=0?
         <RepoBody>
           <Flex direction='row' wrap='wrap' gridGap="1em" style={{justifyContent:'space-around'}}>

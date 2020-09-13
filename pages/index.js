@@ -1,6 +1,7 @@
 import React,{useEffect} from "react";
 import {useSession} from "next-auth/client";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import Hero from '../components/Hero';
 
 const Header = props => {
   
@@ -14,9 +15,7 @@ const Header = props => {
   },[session]);
 
   return (
-    <>
-      <p>Login</p>
-    </>
+    <Hero/>
   );
 };
 

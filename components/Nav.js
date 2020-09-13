@@ -2,11 +2,10 @@ import React from "react";
 import { Box, Heading, Flex, Text, Button,Avatar } from "@chakra-ui/core";
 import { signIn, signOut, useSession } from 'next-auth/client';
 import {GoMarkGithub} from 'react-icons/go';
+import {useRouter} from 'next/router';
 
 const Header = props => {
-  const [show, setShow] = React.useState(false);
-  const handleToggle = () => setShow(!show);
-
+  const router = useRouter();
   const [ session, loading ] = useSession()
 
   return (
@@ -16,13 +15,13 @@ const Header = props => {
       justify="space-between"
       wrap="wrap"
       padding="1rem"
-      bg="blue.400"
-      color="white"
+      bg={router.pathname==='/'?"#5ffbf1":"blue.400"}
+      color={router.pathname==='/'?"gray.600":"white"}
       {...props}
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" size="lg">
-          Bulk Delete Repo
+         Github Sweeper
         </Heading>
       </Flex>
 
@@ -34,7 +33,6 @@ const Header = props => {
           </>
         }
         <Box
-          display={{ sm: show ? "block" : "none", md: "block" }}
           mt={{ base: 4, md: 0 }}
         >
           {!session && <Button leftIcon={GoMarkGithub} bg="transparent" border="1px" onClick={()=>signIn('github')}>
