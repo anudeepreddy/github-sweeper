@@ -28,7 +28,7 @@ export default async(req, res) => {
   
     res.json(result);
   } catch(e){
-    console.log(e);
+    //console.log(e);
     res.json([]);
   }
   

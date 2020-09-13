@@ -29,6 +29,11 @@ const options = {
   ],
   session: { jwt: true },
   database: process.env.MONGO_URI,
+  callbacks: {
+    jwt: async (token, user, account, profile, isNewUser) => {
+      return Promise.resolve({...token});
+    }
+  }
 }
 
 export default (req, res) => NextAuth(req, res, options)

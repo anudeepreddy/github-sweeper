@@ -28,9 +28,6 @@ const Repos = props => {
       }
     }
   }
-  useEffect(()=>{
-    console.log(deleteBatch);
-  },[deleteBatch]);
 
   function removeFromDeleteBatch(repoUrl){
     setDeleteBatch(deleteBatch.filter((d)=>{
@@ -76,7 +73,8 @@ const Repos = props => {
   },[session]);
   
   useEffect(()=>{
-    fetch('/api/fetch_repos').then(data=>data.json()).then(setRepos);
+    if(session)
+      fetch('/api/fetch_repos').then(data=>data.json()).then(setRepos);
   },[]);
 
   return (
