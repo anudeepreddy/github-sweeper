@@ -1,16 +1,15 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+.hero{
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  min-height: 90vh;
+  align-items: center;
+  justify-content: space-around;
+  background-image: linear-gradient(to top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+@media only screen and (max-width: 768px) {
+  .hero{
+    flex-direction: column;
+  }
 }
